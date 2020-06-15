@@ -5,20 +5,16 @@ import java.util.List;
 import org.kohsuke.github.*;
 import org.kohsuke.github.GHCommit.File;
 
+/**
+ * 
+ * @author João
+ * @version 1
+ * 
+ * Class used to connect to GitHub and scrape all specified needs (repository, commits, tags, files, info, etc.)
+ * 
+ */
+
 public class GitHubHandler {
-	
-	public static void main(String[] args) {
-		try {
-			GitHubHandler git = new GitHubHandler();
-			System.out.println("Remote connection to GitHub initiated.\n\n");
-			HTMLHelper helper = new HTMLHelper();
-			System.out.println("Retrieving all specified files. This may take a while.\n\n");
-			helper.fillGitFiles();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	private GitHubBuilder gitBuilder;
 	private GitHub git;
@@ -26,6 +22,14 @@ public class GitHubHandler {
 	private static String REPO_LINK = "vbasto-iscte/ESII1920";
 	private static String ACCESS_TOKEN = "74ef6e2b3c1cac85df37a9f469d9b8b80e17265d";
 	private static List<GHCommit> commitList;
+	
+	/**
+	 * 
+	 * @throws IOException
+	 * 
+	 * Class constructor that connects to the specified Git Repository
+	 * 
+	 */
 	
 	@SuppressWarnings("static-access")
 	public GitHubHandler() throws IOException {
@@ -40,6 +44,16 @@ public class GitHubHandler {
 		commitList = gitRep.listCommits().toList();
 	}
 	
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 * 
+	 * Gets the specified file's timestamp
+	 * 
+	 */
+	
 	public String getFileTimestamp(File file) throws IOException {
 		if(fileListContainsFile(commitList.get(0).getFiles(), file)) {
 			return commitList.get(0).getLastStatus().toString().split("updatedAt=")[1].split("]")[0];
@@ -52,6 +66,16 @@ public class GitHubHandler {
 		}
 		return null;
 	}
+	
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 * 
+	 * Gets the specified file's tag
+	 * 
+	 */
 	
 	public String getFileTag(File file) throws IOException {
 		if(fileListContainsFile(commitList.get(0).getFiles(), file)) {
@@ -66,7 +90,17 @@ public class GitHubHandler {
 		return null;
 	}
 	
-	public String getFileDescription(File file) throws IOException {
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 * 
+	 * Gets the specified file's description
+	 * 
+	 */
+	
+	public String getFileTagDescription(File file) throws IOException {
 		if(fileListContainsFile(commitList.get(0).getFiles(), file)) {
 			return commitList.get(0).getCommitShortInfo().getMessage();
 		} else {
@@ -78,6 +112,16 @@ public class GitHubHandler {
 		}
 		return null;
 	}
+	
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 * 
+	 * Gets the specified file's spread visualization link
+	 * 
+	 */
 	
 	public String getSVLink(File file) throws IOException {
 		if(fileListContainsFile(commitList.get(0).getFiles(), file)) {
@@ -92,6 +136,16 @@ public class GitHubHandler {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param fileList
+	 * @param file
+	 * @return
+	 * 
+	 * Checks if the specified file is inside a specified list of files
+	 * 
+	 */
+	
 	public boolean fileListContainsFile(List<File> fileList, File file) {
 		List<String> shaList = new ArrayList<String>();
 		for(File f : fileList) {
@@ -103,12 +157,28 @@ public class GitHubHandler {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 * 
+	 * Gets all tags of a Git Repository
+	 * 
+	 */
+	
 	public PagedIterable<GHTag> getTags() throws IOException {
 		return gitRep.listTags();
 	}
 	
+	/**
+	 *
+	 * @return
+	 * 
+	 * Gets the Git Repository
+	 * 
+	 */
+	
 	public GHRepository getGitRep() {
 		return gitRep;
 	}
-	
 }
